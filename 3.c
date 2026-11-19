@@ -9,32 +9,18 @@
 
 #define BIN_LEN 5
 
-void insert_bin_path(char *path_command){
-    char bin_path[]="/bin/";
-    size_t len=strlen(bin_path);
-    //לעשות בדיקה על path command מחייב לקבל את הפרמטר של הגודל בבתים
-    //כי אי אפשר לחשב את זה כשהוא ארגומנט
-    //ומצד שני גם לחשב עם strlen לא יעזור לי כאן
-    if(path_command==NULL){
-        printf("path_command is null\n");
-        return;
-    }
-    for(size_t i=0;i<len;i++){
-        path_command[i]=bin_path[i];
-    }
-}
 
 int create_shell(void){
     char path_command[256]={0};
-    // insert_bin_path(path_command);
     int stat;
     pid_t f;
+    
     while(1){
-        if(fgets(path_command/* +BIN_LEN */,sizeof(path_command)/* -BIN_LEN */,stdin)==NULL){
+        if(fgets(path_command,sizeof(path_command),stdin)==NULL){
             break;
         };        
-        size_t len=strlen(path_command/* +BIN_LEN */);
-        path_command[len/* +BIN_LEN */-1]=0;
+        size_t len=strlen(path_command);
+        path_command[len-1]=0;
         f=fork();
         if(f==-1){
             printf("Error creating son process, exiting shell\n");
@@ -52,7 +38,7 @@ int create_shell(void){
 
         }
         else if(f!=0){
-            memset(path_command/* +BIN_LEN */,0,sizeof(path_command)/* -BIN_LEN */);
+            memset(path_command,0,sizeof(path_command));
             while(wait(&stat)!=-1){    
             };
         }   
